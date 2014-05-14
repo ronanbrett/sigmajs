@@ -108,7 +108,7 @@
      */
     // {string} Indicates of to scale the graph relatively to its container.
     //          Available values: "inside", "outside"
-    scalingMode: 'inside',
+    scalingMode: 'outside',
     // {number} The margin to keep around the graph.
     sideMargin: 0,
     // {number} Determine the size of the smallest and the biggest node / edges
@@ -118,10 +118,10 @@
     //          equals, then the minimal display size will be 0. And if they
     //          are both equal to 0, then there is no mapping, and the radius
     //          of the nodes will be their size.
-    minEdgeSize: 0.5,
+    minEdgeSize: 0.2,
     maxEdgeSize: 1,
     minNodeSize: 1,
-    maxNodeSize: 8,
+    maxNodeSize: 40,
 
 
 
@@ -141,20 +141,20 @@
     eventsEnabled: true,
     // {number} Defines by how much multiplicating the zooming level when the
     //          user zooms with the mouse-wheel.
-    zoomingRatio: 1.7,
+    zoomingRatio: 2.9,
     // {number} Defines by how much multiplicating the zooming level when the
     //          user zooms by double clicking.
-    doubleClickZoomingRatio: 2.2,
+    doubleClickZoomingRatio: 35,
     // {number} The minimum zooming level.
-    zoomMin: 0.0625,
+    zoomMin: 0.00015,
     // {number} The maximum zooming level.
-    zoomMax: 2,
+    zoomMax: 1.5,
     // {number} The duration of animations following a mouse scrolling.
     mouseZoomDuration: 200,
     // {number} The duration of animations following a mouse double click.
-    doubleClickZoomDuration: 200,
+    doubleClickZoomDuration: 1000,
     // {number} The duration of animations following a mouse dropping.
-    mouseInertiaDuration: 200,
+    mouseInertiaDuration: 0,
     // {number} The inertia power (mouse captor).
     mouseInertiaRatio: 3,
     // {number} The duration of animations following a touch dropping.

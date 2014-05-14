@@ -102,6 +102,8 @@
       false
     );
 
+    
+
     // Deal with sigma events:
     sigma.misc.bindEvents.call(this, this.options.prefix);
     sigma.misc.drawHovers.call(this, this.options.prefix);

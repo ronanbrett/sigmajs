@@ -615,6 +615,143 @@
     delete __instances[this.id];
   };
 
+  sigma.prototype.zoomToNode = function(node, ratio, camera){
+      if(typeof camera == "undefined"){
+          camera = this.cameras[0];
+      }
+      camera.ratio = ratio;
+      camera.x = node[camera.readPrefix+"x"];
+      camera.y = node[camera.readPrefix+"y"]; 
+
+
+
+      sigma.utils.zoomTo(camera, camera.x, camera.y, 0.025, 200);
+
+     this.refresh();
+  }
+
+  sigma.prototype.resetZoom = function(camera){
+      if(typeof camera == "undefined"){
+          camera = this.cameras[0];
+      }
+      camera.ratio = 1;
+      camera.x = 0;
+      camera.y = 0;   
+      this.refresh();
+  }
+
+
+  sigma.prototype.resizeWindow = function(){
+    //sigma.renderers.canvas.resize();
+    console.log(sigma.canvas);
+
+  }
+
+
+
+  sigma.prototype.resetZoom2 = function(camera){
+      if(typeof camera == "undefined"){
+          camera = this.cameras[0];
+      }
+
+      var settings = camera.settings,
+        count,
+        newRatio,
+        animationSettings,
+        coordinates;
+
+       var animation = {
+          duration: 100
+        };
+
+    // Create the newRatio dealing with min / max:
+   
+
+    // Check that the new ratio is different from the initial one:
+      // Create the coordinates variable:
+      coordinates = {
+        x: 0,
+        y: 0, 
+        ratio: 0.85
+      };
+
+      if (animation && animation.duration) {
+        // Complete the animation setings:
+        count = sigma.misc.animation.killAll(camera);
+        animation = sigma.utils.extend(
+          animation,
+          {
+            easing: count ? 'quadraticOut' : 'quadraticInOut'
+          }
+        );
+
+        sigma.misc.animation.camera(camera, coordinates, animation);
+      } else {
+        camera.goTo(coordinates);
+        if (animation && animation.onComplete)
+          animation.onComplete();
+      }
+    
+
+  }
+
+
+  sigma.prototype.zoomToNode2 = function(node, ratio, camera,animation){
+      if(typeof camera == "undefined"){
+          camera = this.cameras[0];
+      }
+
+      var settings = camera.settings,
+        count,
+        newRatio,
+        animationSettings,
+        coordinates;
+
+       var animation = {
+          duration: settings('mouseZoomDuration')
+        };
+
+        console.log(node);
+
+    // Create the newRatio dealing with min / max:
+    newRatio = Math.max(
+      settings('zoomMin'),
+      Math.min(
+        settings('zoomMax'),
+        camera.ratio * ratio
+      )
+    );
+
+    // Check that the new ratio is different from the initial one:
+      // Create the coordinates variable:
+      //ratio = newRatio / camera.ratio;
+      coordinates = {
+        x: node[camera.readPrefix+"x"],
+        y: node[camera.readPrefix+"y"]+4, 
+        ratio: ratio
+      };
+     
+
+      if (animation && animation.duration) {
+        // Complete the animation setings:
+        count = sigma.misc.animation.killAll(camera);
+        animation = sigma.utils.extend(
+          animation,
+          {
+            easing: count ? 'quadraticOut' : 'quadraticInOut'
+          }
+        );
+
+        sigma.misc.animation.camera(camera, coordinates, animation);
+      } else {
+        camera.goTo(coordinates);
+        if (animation && animation.onComplete)
+          animation.onComplete();
+      }
+    
+
+  }
+
 
 
 

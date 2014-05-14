@@ -257,6 +257,7 @@
      * @param {event} e A mouse event.
      */
     function _doubleClickHandler(e) {
+
       var pos,
           ratio,
           animation;
@@ -314,6 +315,9 @@
           sigma.utils.getY(e) - e.target.height / 2,
           true
         );
+
+            sigma.plugins.animate(s,{size: 'grid_size',});
+
 
         animation = {
           duration: _settings('mouseZoomDuration')

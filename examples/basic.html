@@ -12,13 +12,7 @@
 <script src="../src/captors/sigma.captors.mouse.js"></script>
 <script src="../src/captors/sigma.captors.touch.js"></script>
 <script src="../src/renderers/sigma.renderers.canvas.js"></script>
-<script src="../src/renderers/sigma.renderers.webgl.js"></script>
 <script src="../src/renderers/sigma.renderers.def.js"></script>
-<script src="../src/renderers/webgl/sigma.webgl.nodes.def.js"></script>
-<script src="../src/renderers/webgl/sigma.webgl.nodes.fast.js"></script>
-<script src="../src/renderers/webgl/sigma.webgl.edges.def.js"></script>
-<script src="../src/renderers/webgl/sigma.webgl.edges.fast.js"></script>
-<script src="../src/renderers/webgl/sigma.webgl.edges.arrow.js"></script>
 <script src="../src/renderers/canvas/sigma.canvas.labels.def.js"></script>
 <script src="../src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
 <script src="../src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
@@ -31,16 +25,22 @@
 <script src="../src/misc/sigma.misc.animation.js"></script>
 <script src="../src/misc/sigma.misc.bindEvents.js"></script>
 <script src="../src/misc/sigma.misc.drawHovers.js"></script>
+<script src="../plugins/sigma.layout.forceAtlas2/sigma.layout.forceAtlas2.js"></script>
+<script src="../plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
 <!-- END SIGMA IMPORTS -->
 <div id="container">
   <style>
+  html,body{width:100%;height:100%;}
+
     #graph-container {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      position: absolute;
-    }
+      width:30%;
+    height:100%;
+    z-index:99;
+    background-color: #c8c9c1;
+      }
   </style>
   <div id="graph-container"></div>
 </div>
@@ -55,23 +55,41 @@
  */
 var i,
     s,
-    N = 100,
-    E = 500,
+    N = 30,
+    E = 40,
+     L = 10,
+     step = 0,
+
     g = {
       nodes: [],
       edges: []
     };
 
 // Generate a random graph:
-for (i = 0; i < N; i++)
-  g.nodes.push({
+for (i = 0; i < N; i++) {
+  o = {
     id: 'n' + i,
     label: 'Node ' + i,
-    x: Math.random(),
-    y: Math.random(),
-    size: Math.random(),
-    color: '#666'
+    circular_x: L * Math.cos(Math.PI * 2 * i / N - Math.PI / 2),
+    circular_y: L * Math.sin(Math.PI * 2 * i / N - Math.PI / 2),
+    circular_size: Math.random(),
+    circular_color: '#' + (
+      Math.floor(Math.random() * 16777215).toString(16) + '000000'
+    ).substr(0, 6),
+    grid_x: i % L,
+    grid_y: Math.floor(i / L),
+    grid_size: Math.random(),
+    grid_color: '#333',
+    single_size:0.01
+  };
+
+  ['x', 'y', 'size', 'color'].forEach(function(val) {
+    o[val] = o['grid_' + val];
   });
+
+  g.nodes.push(o);
+}
+
 
 for (i = 0; i < E; i++)
   g.edges.push({
@@ -79,12 +97,82 @@ for (i = 0; i < E; i++)
     source: 'n' + (Math.random() * N | 0),
     target: 'n' + (Math.random() * N | 0),
     size: Math.random(),
-    color: '#ccc'
+    color: '#fafafa'
   });
 
 // Instanciate sigma:
 s = new sigma({
   graph: g,
-  container: 'graph-container'
+  container: 'graph-container',
+  settings: {
+    doubleClickEnabled: false
+  }
 });
+
+
+s.startForceAtlas2();
+
+setTimeout(function(){
+  s.stopForceAtlas2();
+}, 6000);
+
+
+
+
+
+
+
+s.bind('clickNode',function(e){
+  s.stopForceAtlas2();
+  $('#graph-container').animate({width: "30%"}, 100,function(){
+    sigma.plugins.animate(s,{size: 'single_size',});
+    window.dispatchEvent(new Event('resize'));
+    var gWidth = $(document).width();
+    if(gWidth>0 && gWidth < 600){
+      gWidth = 0.25;
+    }
+    if(gWidth>600 && gWidth < 1600){
+
+       gWidth = 0.095;
+    }
+    if(gWidth>1600 ){
+       gWidth = 0.015;
+    }
+    s.zoomToNode2(e.data.node,gWidth);
+  });
+  
+  //s.resetZoom();
+
+})
+
+/*
+setInterval(function() {
+  var prefix = ['grid_', 'circular_'][step = +!step];
+  sigma.plugins.animate(
+    s,
+    {
+      x: prefix + 'x',
+      y: prefix + 'y',
+      size: prefix + 'size',
+      color: prefix + 'color'
+    }
+  );
+}, 10000);
+
+*/
+
+s.bind('doubleClickStage', function(e) {
+  sigma.plugins.animate(s,{size: 'grid_size',});
+
+  $('#graph-container').animate({width: "100%"}, 100,function(){
+          $('#graph-container').height('100%');
+           s.resetZoom2();
+            window.dispatchEvent(new Event('resize'));
+            s.startForceAtlas2();
+});
+});
+
+
+
+
 </script>

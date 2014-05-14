@@ -66,7 +66,7 @@ for (i = 0; i < N; i++)
     x: Math.random(),
     y: Math.random(),
     size: Math.random(),
-    color: '#666'
+    color: '#47443d'
   });
 
 for (i = 0; i < E; i++)
@@ -75,7 +75,7 @@ for (i = 0; i < E; i++)
     source: 'n' + (Math.random() * N | 0),
     target: 'n' + (Math.random() * N | 0),
     size: Math.random(),
-    color: '#ccc'
+    color: '#fafafa'
   });
 
 s = new sigma({
@@ -89,9 +89,16 @@ s = new sigma({
 // Bind the events:
 s.bind('overNode outNode clickNode doubleClickNode', function(e) {
   console.log(e.type, e.data.node.label);
+  console.log(s);
+   
 });
+
+
+
 s.bind('clickStage', function(e) {
   console.log(e.type);
+
+
 });
 s.bind('doubleClickStage', function(e) {
   console.log(e.type);

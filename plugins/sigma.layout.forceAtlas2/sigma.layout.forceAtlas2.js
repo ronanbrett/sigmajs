@@ -382,7 +382,7 @@
       else
         this.p.scalingRatio = 10.0;
 
-      this.p.strongGravityMode = false;
+      this.p.strongGravityMode = true;
       this.p.gravity = 1;
 
       // Behavior
